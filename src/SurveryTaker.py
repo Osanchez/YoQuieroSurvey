@@ -17,16 +17,13 @@ class SurveyTaker:
 
     def open_survey_in_browser(self):
         # Configure Chrome Options
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--incognito")
-        chrome_options.add_experimental_option("detach", True)
+        chrome_options = webdriver.ChromeOptions()  # initialize Chrome options object
+        chrome_options.add_argument("--incognito")  # opens window in incognito
+        chrome_options.add_experimental_option("detach", True)  # detaches session to prevent window closure
 
         # Open the survey website
         driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
-        driver.get(self.survey_url)
-
-        assert "Taco Bell" in driver.title
-        pass
+        driver.get(self.survey_url)  # open the chrome browser
 
 
 if __name__ == "__main__":
