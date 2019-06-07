@@ -87,6 +87,7 @@ class SurveyTaker:
         try:
             if self.driver.find_element_by_class_name("Error").is_displayed():
                 print("Survey Code Failed...")
+                exit(0)
         except NoSuchElementException:
             print("Survey Code Entered Successfully!")
 
@@ -365,7 +366,7 @@ class SurveyTaker:
 
 
 if __name__ == "__main__":
-    # TODO: Input for survey code
+    # survey_code = input("Enter a survey code: ")
     survey_code = "2595-5022-2551-2039"
 
     # Test Opening Survey Page
