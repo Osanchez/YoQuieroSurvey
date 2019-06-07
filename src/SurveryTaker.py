@@ -1,3 +1,7 @@
+import time
+from datetime import datetime
+from random import Random
+
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
@@ -11,7 +15,13 @@ class SurveyTaker:
     driver = None
 
     def __init__(self, code):
+        #initialize survey code
         self.survey_code = code
+
+        # create randomizer object and give unique seed
+        self.random = Random()
+        self.random.seed(datetime.now())
+
         self.setup()
 
     def setup(self):
@@ -100,6 +110,7 @@ class SurveyTaker:
         satisfaction_choice.click()
 
         # Select Next
+        print("Selecting Next...")
         next_button = self.driver.find_element_by_id("NextButton")
         next_button.click()
 
@@ -110,11 +121,12 @@ class SurveyTaker:
         carry_out_element.click()
 
         # Select Next
+        print("Selecting Next...")
         next_button = self.driver.find_element_by_id("NextButton")
         next_button.click()
 
     def select_detailed_satisfaction(self, food_appearance, staff_friendliness, order_accuracy, store_cleanliness, order_speed, order_portion):
-        print("Selecting Detailed Experience")
+        print("Selecting Detailed Experience...")
         # Get all elements for all choices
         food_appearance_choices = {
             5: self.driver.find_element_by_id("FNSR011000").find_element_by_class_name("Opt5"),
@@ -184,11 +196,176 @@ class SurveyTaker:
         portion_choice.click()
 
         # Select Next
+        print("Selecting Next...")
         next_button = self.driver.find_element_by_id("NextButton")
         next_button.click()
 
+    def select_experienced_problem(self):
+        print("Selecting Experienced Problem Selection....")
+        # Select no problems experienced
+        no_option = self.driver.find_element_by_class_name("Opt2")
+        no_option.click()
+
+        # Select Next Button
+        print("Selecting Next...")
+        next_button = self.driver.find_element_by_id("NextButton")
+        next_button.click()
+
+    def leave_feedback_description(self):
+        print("Leaving Feedback Description...")
+        # get the text area element and clear it
+        text_area = self.driver.find_element_by_id("S081000")
+        text_area.clear()
+
+        with open("C:/Users/Omar/PycharmProjects/YoQuieroSurvey/src/highly_satisfied_responses.txt", 'r',
+                  encoding='utf-8') as fp:
+            possible_feedback = fp.readlines()
+            fp.close()
+
+        # type the random message
+        text_area.send_keys(self.random.choice(possible_feedback))
+
+    def enter_highly_satisfied_details(self):
+        print("Deciding if feedback description should be left...")
+
+        # generate a random number
+        random_number = self.random.randint(0, 100)
+
+        # if random number is higher than 80 leave a feedback message
+        if random_number >= 80:
+            print("Leaving Feedback...")
+            self.leave_feedback_description()
+        else:
+            print("Not Leaving Feedback...")
+
+        # Select Next
+        print("Selecting Next...")
+        next_button = self.driver.find_element_by_id("NextButton")
+        next_button.click()
+
+    def select_recognize_team_member(self, choice, team_member=None):
+        print("Selecting Recognize Team Member Choice...")
+
+        # Select whether or not to recognize a team member
+        if choice is True:
+            print("Selecting YES, recognize team member...")
+            if team_member is None:
+                self.select_recognize_team_member(False)
+            else:
+                yes_choice = self.driver.find_element_by_class_name("Opt1")
+                yes_choice.click()
+
+                # Select Next
+                print("Selecting Next...")
+                next_button = self.driver.find_element_by_id("NextButton")
+                next_button.click()
+
+                # Enter team member information
+                self.recognize_team_member(team_member)
+
+        else:
+            print("Selecting NO, don't recognize team member...")
+            no_choice = self.driver.find_element_by_class_name("Opt2")
+            no_choice.click()
+
+            # Select Next
+            print("Selecting Next...")
+            next_button = self.driver.find_element_by_id("NextButton")
+            next_button.click()
+
+    def recognize_team_member(self, team_member):
+        print("Entering Team Member Recognition Information...")
+        # get the text line for entering the team member and clear it
+        text_line = self.driver.find_element_by_id("S081001")
+        text_line.clear()
+
+        # enter the team member name
+        text_line.send_keys(team_member)
+
+        # get the text area element and clear it
+        text_area = self.driver.find_element_by_id("S081002")
+        text_area.clear()
+
+        # get the random feedback for team member
+        with open("C:/Users/Omar/PycharmProjects/YoQuieroSurvey/src/team_member_satisfaction_response.txt", 'r',
+                  encoding='utf-8') as fp:
+            possible_feedback = fp.readlines()
+            fp.close()
+
+        # type the random message
+        feedback = self.random.choice(possible_feedback)
+
+        # replace filler text with actual name
+        if "{member}" in feedback:
+            feedback = str(feedback).replace("{member}", team_member)
+
+        # enter the feedback
+        text_area.send_keys(feedback)
+
+        # Select Next
+        print("Selecting Next...")
+        next_button = self.driver.find_element_by_id("NextButton")
+        next_button.click()
+
+    def select_taco_visual_options(self):
+        print("Selecting Taco Visual Options...")
+        # Select Yes
+        yes = self.driver.find_element_by_class_name("Opt1").find_element_by_class_name("radioButtonHolder")
+        yes.click()
+
+        # Select Next
+        print("Selecting Next...")
+        next_button = self.driver.find_element_by_id("NextButton")
+        next_button.click()
+
+    def select_hard_shell_purchased(self, was_purchased):
+        print("Selecting Hard Shell Purchased Option...")
+        yes = self.driver.find_element_by_class_name("Opt1")
+        no = self.driver.find_element_by_class_name("Opt2")
+
+        if was_purchased:
+            print("Selecting Yes...")
+            # Select Yes
+            yes.click()
+
+            # Select Next
+            print("Selecting Next...")
+            next_button = self.driver.find_element_by_id("NextButton")
+            next_button.click()
+            self.select_taco_visual_options()
+        else:
+            print("Selecting No...")
+            # Select No
+            no.click()
+
+            # Select Next
+            print("Selecting Next...")
+            next_button = self.driver.find_element_by_id("NextButton")
+            next_button.click()
+
+    def select_enter_sweepstakes(self):
+        print("Declining Sweepstakes Entrance...")
+
+        # Select No
+        no = self.driver.find_element_by_class_name("Opt2").find_element_by_class_name("radioSimpleInput")
+        no.click()
+
+        # Select Next
+        print("Selecting Next...")
+        next_button = self.driver.find_element_by_id("NextButton")
+        next_button.click()
+
+    def check_success(self):
+        try:
+            finished = self.driver.find_element_by_id("finishedIncentiveHolder").is_displayed()
+            if finished:
+                return "SUCCESSFUL"
+        except NoSuchElementException:
+            return "UNSUCCESSFUL"
+
 
 if __name__ == "__main__":
+    # TODO: Input for survey code
     survey_code = "2595-5022-2551-2039"
 
     # Test Opening Survey Page
@@ -209,8 +386,26 @@ if __name__ == "__main__":
     survey_taker.select_order_type()
 
     # Test Detailed Satisfaction level Choices
-    survey_taker.select_detailed_satisfaction(5, 3, 5, 5, 4, 5)
+    survey_taker.select_detailed_satisfaction(5, 5, 5, 5, 5, 5)
 
+    # Test experienced problem choice
+    survey_taker.select_experienced_problem()
+
+    # Test enter feedback description if successful roll
+    survey_taker.enter_highly_satisfied_details()
+
+    # Test Recognize Team Member
+    survey_taker.select_recognize_team_member(False, "Xavier")
+
+    # Test Hard Shell Purchased
+    survey_taker.select_hard_shell_purchased(True)
+
+    # Test Sweepstakes Option
+    survey_taker.select_enter_sweepstakes()
+
+    # Test Success
+    success = survey_taker.check_success()
+    print("Survey Was: " + success)
 
 
 
