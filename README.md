@@ -11,7 +11,7 @@ A Survey Taker for TB, for the people who want to leave a positive survey but ar
     pip install webdriver_manager
     
 # DISCLAIMER
-This survey take is to be used under the users own discretion. This script was for pure educational purposes in order to test functionality
+This survey taker is to be used under the users own discretion. This script was for pure educational purposes in order to test functionality
 of the Selenium browser automation tool. Any formal and non formal issues resulting from the use of this script is the sole
 responsibility of the user. 
 
