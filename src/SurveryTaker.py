@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 from random import Random
 
@@ -117,83 +118,24 @@ class SurveyTaker:
     def select_order_type(self):
         print("Selecting Order Type...")
         # Select carry out option
-        carry_out_element = self.driver.find_element_by_class_name("Opt3").find_element_by_class_name("radioButtonHolder")
-        carry_out_element.click()
+        try:
+            carry_out_element = self.driver.find_element_by_class_name("Opt3").find_element_by_class_name("radioButtonHolder")
+            carry_out_element.click()
 
-        # Select Next
-        print("Selecting Next...")
-        next_button = self.driver.find_element_by_id("NextButton")
-        next_button.click()
+            # Select Next
+            print("Selecting Next...")
+            next_button = self.driver.find_element_by_id("NextButton")
+            next_button.click()
+        except NoSuchElementException:
+            print("Order type selection not visible")
 
-    def select_detailed_satisfaction(self, food_appearance, staff_friendliness, order_accuracy, store_cleanliness, order_speed, order_portion):
+    def select_detailed_satisfaction(self):
         print("Selecting Detailed Experience...")
         # Get all elements for all choices
-        food_appearance_choices = {
-            5: self.driver.find_element_by_id("FNSR011000").find_element_by_class_name("Opt5"),
-            4: self.driver.find_element_by_id("FNSR011000").find_element_by_class_name("Opt4"),
-            3: self.driver.find_element_by_id("FNSR011000").find_element_by_class_name("Opt3"),
-            2: self.driver.find_element_by_id("FNSR011000").find_element_by_class_name("Opt2"),
-            1: self.driver.find_element_by_id("FNSR011000").find_element_by_class_name("Opt1")
-        }
+        max_scores = self.driver.find_elements_by_class_name("Opt5")
 
-        friendliness_choices = {
-            5: self.driver.find_element_by_id("FNSR010000").find_element_by_class_name("Opt5"),
-            4: self.driver.find_element_by_id("FNSR010000").find_element_by_class_name("Opt4"),
-            3: self.driver.find_element_by_id("FNSR010000").find_element_by_class_name("Opt3"),
-            2: self.driver.find_element_by_id("FNSR010000").find_element_by_class_name("Opt2"),
-            1: self.driver.find_element_by_id("FNSR010000").find_element_by_class_name("Opt1")
-        }
-
-        accuracy_choices = {
-            5: self.driver.find_element_by_id("FNSR008000").find_element_by_class_name("Opt5"),
-            4: self.driver.find_element_by_id("FNSR008000").find_element_by_class_name("Opt4"),
-            3: self.driver.find_element_by_id("FNSR008000").find_element_by_class_name("Opt3"),
-            2: self.driver.find_element_by_id("FNSR008000").find_element_by_class_name("Opt2"),
-            1: self.driver.find_element_by_id("FNSR008000").find_element_by_class_name("Opt1")
-        }
-
-        cleanliness_choices = {
-            5: self.driver.find_element_by_id("FNSR013000").find_element_by_class_name("Opt5"),
-            4: self.driver.find_element_by_id("FNSR013000").find_element_by_class_name("Opt4"),
-            3: self.driver.find_element_by_id("FNSR013000").find_element_by_class_name("Opt3"),
-            2: self.driver.find_element_by_id("FNSR013000").find_element_by_class_name("Opt2"),
-            1: self.driver.find_element_by_id("FNSR013000").find_element_by_class_name("Opt1")
-        }
-
-        speed_choices = {
-            5: self.driver.find_element_by_id("FNSR012000").find_element_by_class_name("Opt5"),
-            4: self.driver.find_element_by_id("FNSR012000").find_element_by_class_name("Opt4"),
-            3: self.driver.find_element_by_id("FNSR012000").find_element_by_class_name("Opt3"),
-            2: self.driver.find_element_by_id("FNSR012000").find_element_by_class_name("Opt2"),
-            1: self.driver.find_element_by_id("FNSR012000").find_element_by_class_name("Opt1")
-        }
-
-        portion_choices = {
-            5: self.driver.find_element_by_id("FNSR007000").find_element_by_class_name("Opt5"),
-            4: self.driver.find_element_by_id("FNSR007000").find_element_by_class_name("Opt4"),
-            3: self.driver.find_element_by_id("FNSR007000").find_element_by_class_name("Opt3"),
-            2: self.driver.find_element_by_id("FNSR007000").find_element_by_class_name("Opt2"),
-            1: self.driver.find_element_by_id("FNSR007000").find_element_by_class_name("Opt1")
-        }
-
-        # Select all choices
-        food_appearance_choice = food_appearance_choices.get(food_appearance)
-        food_appearance_choice.click()
-
-        friendliness_choice = friendliness_choices.get(staff_friendliness)
-        friendliness_choice.click()
-
-        accuracy_choice = accuracy_choices.get(order_accuracy)
-        accuracy_choice.click()
-
-        cleanliness_choice = cleanliness_choices.get(store_cleanliness)
-        cleanliness_choice.click()
-
-        speed_choice = speed_choices.get(order_speed)
-        speed_choice.click()
-
-        portion_choice = portion_choices.get(order_portion)
-        portion_choice.click()
+        for element in max_scores:
+            element.click()
 
         # Select Next
         print("Selecting Next...")
@@ -357,7 +299,7 @@ class SurveyTaker:
 
     def check_success(self):
         try:
-            finished = self.driver.find_element_by_id("finishedIncentiveHolder").is_displayed()
+            finished = self.driver.find_elements_by_xpath("//*[contains(text(), 'Thank You!')]")
             if finished:
                 return "SUCCESSFUL"
         except NoSuchElementException:
@@ -366,11 +308,12 @@ class SurveyTaker:
 
 if __name__ == "__main__":
     # survey_code = input("Enter a survey code: ")
-    survey_code = "2595-5022-2551-2039"
+    survey_code = "2196503228542109"
 
     # Test Opening Survey Page
     survey_taker = SurveyTaker(survey_code)
     survey_taker.open_survey_in_browser()
+    time.sleep(1)
 
     # Test Parsing Survey Code
     parsed_code = survey_taker.parse_survey_code()
@@ -378,30 +321,39 @@ if __name__ == "__main__":
 
     # Test Entering The Survey Code
     survey_taker.enter_survey_code()
+    time.sleep(1)
 
     # Test Satisfaction Level Choice
     survey_taker.select_overall_satisfaction_level(5)
+    time.sleep(1)
 
     # Test Select Order Type
     survey_taker.select_order_type()
+    time.sleep(1)
 
     # Test Detailed Satisfaction level Choices
-    survey_taker.select_detailed_satisfaction(5, 5, 5, 5, 5, 5)
+    survey_taker.select_detailed_satisfaction()
+    time.sleep(1)
 
     # Test experienced problem choice
     survey_taker.select_experienced_problem()
+    time.sleep(1)
 
     # Test enter feedback description if successful roll
     survey_taker.enter_highly_satisfied_details()
+    time.sleep(1)
 
     # Test Recognize Team Member
-    survey_taker.select_recognize_team_member(False, "Xavier")
+    survey_taker.select_recognize_team_member(False, "Kassie")
+    time.sleep(1)
 
     # Test Hard Shell Purchased
     survey_taker.select_hard_shell_purchased(True)
+    time.sleep(1)
 
     # Test Sweepstakes Option
     survey_taker.select_enter_sweepstakes()
+    time.sleep(1)
 
     # Test Success
     success = survey_taker.check_success()
