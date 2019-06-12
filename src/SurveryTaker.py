@@ -245,6 +245,7 @@ class SurveyTaker:
         text_area.send_keys(feedback)
 
         # Select Next
+        time.sleep(10)
         print("Selecting Next...")
         next_button = self.driver.find_element_by_id("NextButton")
         next_button.click()
@@ -313,7 +314,6 @@ if __name__ == "__main__":
     # Test Opening Survey Page
     survey_taker = SurveyTaker(survey_code)
     survey_taker.open_survey_in_browser()
-    time.sleep(1)
 
     # Test Parsing Survey Code
     parsed_code = survey_taker.parse_survey_code()
@@ -321,39 +321,30 @@ if __name__ == "__main__":
 
     # Test Entering The Survey Code
     survey_taker.enter_survey_code()
-    time.sleep(1)
 
     # Test Satisfaction Level Choice
     survey_taker.select_overall_satisfaction_level(5)
-    time.sleep(1)
 
     # Test Select Order Type
     survey_taker.select_order_type()
-    time.sleep(1)
 
     # Test Detailed Satisfaction level Choices
     survey_taker.select_detailed_satisfaction()
-    time.sleep(1)
 
     # Test experienced problem choice
     survey_taker.select_experienced_problem()
-    time.sleep(1)
 
     # Test enter feedback description if successful roll
     survey_taker.enter_highly_satisfied_details()
-    time.sleep(1)
 
     # Test Recognize Team Member
-    survey_taker.select_recognize_team_member(False, "Kassie")
-    time.sleep(1)
+    survey_taker.select_recognize_team_member(True, "Xavier")
 
     # Test Hard Shell Purchased
     survey_taker.select_hard_shell_purchased(True)
-    time.sleep(1)
 
     # Test Sweepstakes Option
     survey_taker.select_enter_sweepstakes()
-    time.sleep(1)
 
     # Test Success
     success = survey_taker.check_success()
